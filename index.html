@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CYBER TEDDY 3D - NextGen AR Store & Live Chat</title>
+    
+    <!-- Google 3D Model Viewer Engine -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+    <!-- QR Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-pink: #ff007f;
+            --neon-green: #00ff88;
+            --cyber-dark: #07090e;
+            --card-bg: rgba(16, 21, 33, 0.9);
+            --border-glow: rgba(0, 240, 255, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--cyber-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.08) 0%, transparent 40%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* PARTICLE CANVAS (GLOBAL CLICK EFFECT) */
+        #fxCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999999;
+        }
+
+        /* ================= 1. FUTURISTIC LOGIN SCREEN ================= */
+        #authScreen {
+            display: flex;
+            min-height: 100vh;
+            width: 100vw;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 28px 22px;
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.2);
+            backdrop-filter: blur(16px);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-logo-badge {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px auto;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,240,255,0.2) 0%, rgba(255,0,127,0.1) 100%);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+        }
+
+        .auth-title {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--neon-blue), #ffffff, var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .auth-subtitle {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 22px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-weight: bold;
+            font-size: 13px;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-tab-btn.active {
+            background: linear-gradient(135deg, rgba(0,240,255,0.25), rgba(255,0,127,0.25));
+            color: #ffffff;
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 12px rgba(0,240,255,0.3);
+        }
+
+        .neon-input-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .neon-label {
+            display: block;
+            font-size: 12px;
+            color: var(--neon-blue);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .neon-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(10, 14, 22, 0.7);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .neon-input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+            background: rgba(10, 14, 22, 0.95);
+        }
+
+        .cyber-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #00f0ff, #ff007f);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .cyber-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* ================= 2. MAIN STORE VIEW ================= */
+        #storeScreen {
+            display: none;
+            padding-bottom: 90px;
+        }
+
+        .cyber-appbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(7, 9, 14, 0.88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-brand-logo {
+            font-size: 26px;
+            filter: drop-shadow(0 0 8px var(--neon-blue));
+        }
+
+        .app-brand-name {
+            font-size: 17px;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--neon-blue), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 10px 5px 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-glow);
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .user-avatar-img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #ffffff;
+            font-size: 15px;
+            object-fit: cover;
+            border: 1.5px solid #ffffff;
+        }
+
+        .user-badge-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #e2e8f0;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* GRID LAYOUT */
+        .store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 20px auto 0 auto;
+            padding: 0 16px;
+        }
+
+        .cyber-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 230px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: radial-gradient(circle, #1a2233 0%, #0d121c 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card-model-preview {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            --poster-color: transparent;
+        }
+
+        .badge-3d {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
+            border: 1px solid var(--neon-blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        h2 { font-size: 18px; color: #ffffff; margin: 12px 0 6px 0; font-weight: 700; }
+        p { font-size: 13px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4; }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .price-tag {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .rating-chip {
+            background: rgba(255, 193, 7, 0.15);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .qty-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .qty-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .qty-val { font-weight: bold; font-size: 15px; min-width: 20px; text-align: center; color: #fff; }
+
+        .action-btns { display: flex; flex-direction: column; gap: 8px; }
+
+        .details-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 9px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .buy-card-btn {
+            background: linear-gradient(90deg, #00f0ff, #00ff88);
+            color: #07090e;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+        }
+
+        .details-content {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        /* FLOATING CHAT TRIGGER BUTTON */
+        .floating-chat-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+
+        .floating-chat-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* ================= 3. LIVE CYBER CHATROOM MODAL ================= */
+        .chat-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100015;
+            justify-content: center;
+            align-items: flex-end;
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-blue);
+            width: 100%;
+            max-width: 500px;
+            height: 85vh;
+            border-radius: 24px 24px 0 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+        }
+
+        .chat-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .chat-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--neon-blue);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .msg-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .msg-left {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+        }
+
+        .msg-right {
+            align-self: flex-end;
+            background: linear-gradient(135deg, rgba(0,240,255,0.25), rgba(255,0,127,0.25));
+            border: 1px solid var(--neon-blue);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .msg-sender {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--neon-blue);
+            margin-bottom: 3px;
+        }
+
+        .msg-teddy-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-green);
+            padding: 8px;
+            border-radius: 10px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .chat-input-bar {
+            padding: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+        }
+
+        .chat-btn-share-3d {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .chat-input-text {
+            flex: 1;
+            padding: 12px;
+            background: rgba(10, 14, 22, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-btn-send {
+            background: var(--neon-blue);
+            color: #07090e;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* ================= 4. PROFILE / SETTINGS MODAL ================= */
+        .profile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100020;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-blue);
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.25);
+            overflow-y: auto;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-header h3 { font-size: 18px; font-weight: 800; color: var(--neon-blue); }
+
+        .close-profile-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .avatar-uploader-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar-preview-wrap {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            margin-bottom: 10px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #00f0ff, #ff007f);
+        }
+
+        #profileAvatarPreview { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .avatar-upload-trigger {
+            font-size: 12px;
+            color: var(--neon-blue);
+            cursor: pointer;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        /* ================= 5. LIVE CAMERA AR MODAL ================= */
+        .modal-3d {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: transparent;
+            z-index: 99999;
+            overflow: hidden;
+        }
+
+        #cameraFeed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            transform: translateZ(0);
+            background: transparent;
+        }
+
+        #mainViewer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            background: transparent !important;
+            --poster-color: transparent !important;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .ar-top-nav { position: absolute; top: 15px; left: 15px; z-index: 20; }
+
+        .nav-back-btn {
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid var(--neon-blue);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+        }
+
+        #cameraFlash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            opacity: 0;
+            z-index: 100;
+            pointer-events: none;
+            transition: opacity 0.15s ease-out;
+        }
+
+        .ar-shutter-container {
+            position: absolute;
+            right: 18px;
+            bottom: 165px;
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ar-shutter-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            border: 3px solid #ffffff;
+            padding: 4px;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ar-shutter-inner {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .ar-shutter-text {
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: bold;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+
+        .scanner-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .scanner-reticle {
+            width: 250px;
+            height: 250px;
+            border: 2px dashed var(--neon-blue);
+            border-radius: 24px;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            overflow: hidden;
+        }
+
+        .scanner-laser {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--neon-blue);
+            box-shadow: 0 0 12px var(--neon-blue);
+            animation: scanAnim 1.4s ease-in-out infinite alternate;
+        }
+
+        @keyframes scanAnim { 0% { top: 0%; } 100% { top: 98%; } }
+
+        .scanner-label {
+            margin-top: 18px;
+            color: var(--neon-blue);
+            font-size: 13px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 14px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .ar-bottom-card {
+            position: absolute;
+            bottom: 20px;
+            left: 15px;
+            right: 15px;
+            background: rgba(16, 21, 33, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-glow);
+            border-radius: 18px;
+            padding: 16px;
+            z-index: 20;
+            color: #fff;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+        }
+
+        .ar-info-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .ar-title { font-size: 18px; font-weight: bold; color: #ffffff; }
+        .ar-rating { background: rgba(255, 193, 7, 0.2); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.4); padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .ar-price { font-size: 17px; font-weight: bold; color: var(--neon-green); margin-bottom: 12px; }
+        .ar-btn-row { display: flex; gap: 10px; }
+
+        .ar-share-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .ar-buy-btn {
+            flex: 1.4;
+            background: linear-gradient(90deg, #00f0ff, #00ff88);
+            border: none;
+            color: #07090e;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+        }
+
+        /* ================= 6. CHECKOUT & UPI MODAL ================= */
+        .checkout-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100005;
+            justify-content: center;
+            align-items: flex-end;
+            backdrop-filter: blur(8px);
+        }
+
+        .checkout-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            border-radius: 24px 24px 0 0;
+            padding: 22px;
+            overflow-y: auto;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+        }
+
+        .checkout-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 12px; margin-bottom: 16px; }
+        .checkout-header h3 { font-size: 18px; color: var(--neon-blue); font-weight: 800; }
+
+        .close-checkout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .order-summary {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .order-summary-info h4 { font-size: 15px; color: #ffffff; font-weight: 700; }
+        .order-summary-info p { font-size: 13px; color: var(--neon-green); font-weight: bold; margin-top: 2px; }
+
+        .upi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+
+        .upi-app-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .upi-btn-phonepe { border-color: #5f259f; color: #b784f9; }
+        .upi-btn-gpay { border-color: #1a73e8; color: #7cb3f9; }
+        .upi-btn-paytm { border-color: #002e6e; color: #4dc2f8; }
+        .upi-btn-bhim { border-color: #f26522; color: #fba077; }
+
+        .btn-cod {
+            width: 100%;
+            background: linear-gradient(90deg, #00f0ff, #00ff88);
+            color: #07090e;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 8px;
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+        }
+
+        /* BRANDED QR CARD POPUP */
+        .card-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 100000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            backdrop-filter: blur(8px);
+        }
+
+        .card-container {
+            background: #111622;
+            border: 1px solid var(--border-glow);
+            width: 100%;
+            max-width: 380px;
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #cardCanvas { width: 100%; max-width: 330px; height: auto; border-radius: 12px; margin-bottom: 14px; }
+        .card-actions { display: flex; flex-direction: column; width: 100%; gap: 8px; }
+        .btn-card-share { background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-card-download { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
+        .btn-card-close { background: transparent; color: #aaa; border: 1px solid #444; padding: 7px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 95px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--neon-blue);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 100010;
+            display: none;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fxCanvas"></canvas>
+
+    <!-- ================= 1. LOGIN / REGISTER SCREEN ================= -->
+    <div id="authScreen">
+        <div class="auth-card">
+            <div class="brand-logo-badge">🧸</div>
+            <div class="auth-title">CYBER TEDDY 3D</div>
+            <div class="auth-subtitle">Live Augmented Reality Metaverse Store</div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tabLoginBtn" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab-btn" id="tabRegisterBtn" onclick="switchAuthTab('register')">New Account</button>
+            </div>
+
+            <!-- LOGIN FORM WITH AUTO-ENTER NAVIGATION -->
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+                <div class="neon-input-group">
+                    <label class="neon-label">WhatsApp Mobile Number</label>
+                    <input type="tel" id="loginPhone" class="neon-input auto-jump-input" placeholder="10-digit mobile number" maxlength="10" enterkeyhint="next" required>
+                </div>
+                <div class="neon-input-group">
+                    <label class="neon-label">Security PIN (4-Digits)</label>
+                    <input type="password" id="loginPin" class="neon-input auto-jump-input" placeholder="Enter 4-digit PIN" maxlength="4" enterkeyhint="go" required>
+                </div>
+                <button type="submit" id="btnSubmitLogin" class="cyber-btn">⚡ ENTER METAVERSE</button>
+            </form>
+
+            <!-- REGISTER FORM WITH AUTO-ENTER NAVIGATION -->
+            <form id="registerForm" style="display:none;" onsubmit="handleRegisterSubmit(event)">
+                <div class="neon-input-group">
+                    <label class="neon-label">Full Name</label>
+                    <input type="text" id="regName" class="neon-input auto-jump-input" placeholder="Apna pura naam likhein" enterkeyhint="next" required>
+                </div>
+                <div class="neon-input-group">
+                    <label class="neon-label">WhatsApp Mobile Number</label>
+                    <input type="tel" id="regPhone" class="neon-input auto-jump-input" placeholder="10-digit number" maxlength="10" enterkeyhint="next" required>
+                </div>
+                <div class="neon-input-group">
+                    <label class="neon-label">Delivery Address & Pincode</label>
+                    <input type="text" id="regAddress" class="neon-input auto-jump-input" placeholder="Makan no, Shahar, Pincode" enterkeyhint="next" required>
+                </div>
+                <div class="neon-input-group">
+                    <label class="neon-label">Set 4-Digit Security PIN</label>
+                    <input type="password" id="regPin" class="neon-input auto-jump-input" placeholder="Set 4-digit PIN" maxlength="4" enterkeyhint="done" required>
+                </div>
+                <button type="submit" id="btnSubmitReg" class="cyber-btn">🚀 CREATE ACCOUNT</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 2. STORE MAIN SCREEN ================= -->
+    <div id="storeScreen">
+        
+        <div class="cyber-appbar">
+            <div class="app-brand">
+                <div class="app-brand-logo">🧸</div>
+                <div class="app-brand-name">CYBER TEDDY 3D</div>
+            </div>
+
+            <div class="top-actions">
+                <div class="user-profile-badge" onclick="openProfileModal()">
+                    <div class="user-avatar-img" id="topAvatarBadge">D</div>
+                    <div class="user-badge-name" id="topUserName">User</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUCTS GRID -->
+        <div class="store-grid">
+
+            <!-- PRODUCT 1 -->
+            <div class="cyber-card" id="prod-1" data-title="Sitting Teddy Bear" data-price="499" data-rating="4.9" data-model="./sitting_teddy_bear.glb">
+                <div class="img-wrapper">
+                    <model-viewer class="card-model-preview" src="./sitting_teddy_bear.glb"
+                        alt="Sitting Teddy" auto-rotate rotation-per-second="25deg"
+                        camera-controls disable-zoom touch-action="pan-y"
+                        shadow-intensity="1.5" loading="lazy">
+                    </model-viewer>
+                    <button class="badge-3d" onclick="open3DViewer('prod-1')">📸 Camera AR</button>
+                </div>
+                <h2>Sitting Teddy Bear</h2>
+                <p>Super soft material with sitting posture.</p>
+                <div class="price-row">
+                    <span class="price-tag">Rs. <span class="total-price">499</span></span>
+                    <span class="rating-chip">⭐ 4.9</span>
+                </div>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty('prod-1', -1)">-</button>
+                    <span class="qty-val">1</span>
+                    <button class="qty-btn" onclick="updateQty('prod-1', 1)">+</button>
+                </div>
+                <div class="action-btns">
+                    <button class="details-btn" onclick="toggleDetails('prod-1')">View Specs</button>
+                    <button class="buy-card-btn" onclick="openCheckoutModal('prod-1')">🛒 Buy Now (UPI / COD)</button>
+                </div>
+                <div class="details-content">Height: 30 cm<br>Material: Non-Toxic Plush<br>Washable: Hand Wash</div>
+            </div>
+
+            <!-- PRODUCT 2 -->
+            <div class="cyber-card" id="prod-2" data-title="Classic Teddy Bear" data-price="799" data-rating="4.8" data-model="./teddy_bear.glb">
+                <div class="img-wrapper">
+                    <model-viewer class="card-model-preview" src="./teddy_bear.glb"
+                        alt="Classic Teddy" auto-rotate rotation-per-second="25deg"
+                        camera-controls disable-zoom touch-action="pan-y"
+                        shadow-intensity="1.5" loading="lazy">
+                    </model-viewer>
+                    <button class="badge-3d" onclick="open3DViewer('prod-2')">📸 Camera AR</button>
+                </div>
+                <h2>Classic Teddy Bear</h2>
+                <p>Ultra-cute cuddly companion for gifting.</p>
+                <div class="price-row">
+                    <span class="price-tag">Rs. <span class="total-price">799</span></span>
+                    <span class="rating-chip">⭐ 4.8</span>
+                </div>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty('prod-2', -1)">-</button>
+                    <span class="qty-val">1</span>
+                    <button class="qty-btn" onclick="updateQty('prod-2', 1)">+</button>
+                </div>
+                <div class="action-btns">
+                    <button class="details-btn" onclick="toggleDetails('prod-2')">View Specs</button>
+                    <button class="buy-card-btn" onclick="openCheckoutModal('prod-2')">🛒 Buy Now (UPI / COD)</button>
+                </div>
+                <div class="details-content">Height: 45 cm<br>Material: High Quality Cotton<br>Washable: Machine Wash</div>
+            </div>
+
+            <!-- PRODUCT 3 -->
+            <div class="cyber-card" id="prod-3" data-title="Special AR Teddy" data-price="649" data-rating="5.0" data-model="./teddy_ar.glb">
+                <div class="img-wrapper">
+                    <model-viewer class="card-model-preview" src="./teddy_ar.glb"
+                        alt="AR Teddy" auto-rotate rotation-per-second="25deg"
+                        camera-controls disable-zoom touch-action="pan-y"
+                        shadow-intensity="1.5" loading="lazy">
+                    </model-viewer>
+                    <button class="badge-3d" onclick="open3DViewer('prod-3')">📸 Camera AR</button>
+                </div>
+                <h2>Special AR Teddy</h2>
+                <p>Interactive companion with real world view.</p>
+                <div class="price-row">
+                    <span class="price-tag">Rs. <span class="total-price">649</span></span>
+                    <span class="rating-chip">⭐ 5.0</span>
+                </div>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty('prod-3', -1)">-</button>
+                    <span class="qty-val">1</span>
+                    <button class="qty-btn" onclick="updateQty('prod-3', 1)">+</button>
+                </div>
+                <div class="action-btns">
+                    <button class="details-btn" onclick="toggleDetails('prod-3')">View Specs</button>
+                    <button class="buy-card-btn" onclick="openCheckoutModal('prod-3')">🛒 Buy Now (UPI / COD)</button>
+                </div>
+                <div class="details-content">Height: 35 cm<br>Material: Ultra Soft Velvet<br>Washable: Hand Wash</div>
+            </div>
+
+            <!-- PRODUCT 4 -->
+            <div class="cyber-card" id="prod-4" data-title="Cute Mini Teddy" data-price="399" data-rating="4.7" data-model="./teddy.glb">
+                <div class="img-wrapper">
+                    <model-viewer class="card-model-preview" src="./teddy.glb"
+                        alt="Mini Teddy" auto-rotate rotation-per-second="25deg"
+                        camera-controls disable-zoom touch-action="pan-y"
+                        shadow-intensity="1.5" loading="lazy">
+                    </model-viewer>
+                    <button class="badge-3d" onclick="open3DViewer('prod-4')">📸 Camera AR</button>
+                </div>
+                <h2>Cute Mini Teddy</h2>
+                <p>Lightweight, portable and super soft companion.</p>
+                <div class="price-row">
+                    <span class="price-tag">Rs. <span class="total-price">399</span></span>
+                    <span class="rating-chip">⭐ 4.7</span>
+                </div>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty('prod-4', -1)">-</button>
+                    <span class="qty-val">1</span>
+                    <button class="qty-btn" onclick="updateQty('prod-4', 1)">+</button>
+                </div>
+                <div class="action-btns">
+                    <button class="details-btn" onclick="toggleDetails('prod-4')">View Specs</button>
+                    <button class="buy-card-btn" onclick="openCheckoutModal('prod-4')">🛒 Buy Now (UPI / COD)</button>
+                </div>
+                <div class="details-content">Height: 25 cm<br>Material: Microfiber Plush<br>Washable: Hand Wash</div>
+            </div>
+
+            <!-- PRODUCT 5 -->
+            <div class="cyber-card" id="prod-5" data-title="Jumbo Brown Bear" data-price="999" data-rating="4.9" data-model="./bear.glb">
+                <div class="img-wrapper">
+                    <model-viewer class="card-model-preview" src="./bear.glb"
+                        alt="Jumbo Bear" auto-rotate rotation-per-second="25deg"
+                        camera-controls disable-zoom touch-action="pan-y"
+                        shadow-intensity="1.5" loading="lazy">
+                    </model-viewer>
+                    <button class="badge-3d" onclick="open3DViewer('prod-5')">📸 Camera AR</button>
+                </div>
+                <h2>Jumbo Brown Bear</h2>
+                <p>Big huggable bear with extra fluffy stuffing.</p>
+                <div class="price-row">
+                    <span class="price-tag">Rs. <span class="total-price">999</span></span>
+                    <span class="rating-chip">⭐ 4.9</span>
+                </div>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty('prod-5', -1)">-</button>
+                    <span class="qty-val">1</span>
+                    <button class="qty-btn" onclick="updateQty('prod-5', 1)">+</button>
+                </div>
+                <div class="action-btns">
+                    <button class="details-btn" onclick="toggleDetails('prod-5')">View Specs</button>
+                    <button class="buy-card-btn" onclick="openCheckoutModal('prod-5')">🛒 Buy Now (UPI / COD)</button>
+                </div>
+                <div class="details-content">Height: 60 cm<br>Material: Premium PP Cotton<br>Washable: Dry Clean Only</div>
+            </div>
+
+            <!-- PRODUCT 6 -->
+            <div class="cyber-card" id="prod-6" data-title="Fluffy Soft Teddy" data-price="549" data-rating="4.8" data-model="./teddy_.glb">
+                <div class="img-wrapper">
+                    <model-viewer class="card-model-preview" src="./teddy_.glb"
+                        alt="Fluffy Teddy" auto-rotate rotation-per-second="25deg"
+                        camera-controls disable-zoom touch-action="pan-y"
+                        shadow-intensity="1.5" loading="lazy">
+                    </model-viewer>
+                    <button class="badge-3d" onclick="open3DViewer('prod-6')">📸 Camera AR</button>
+                </div>
+                <h2>Fluffy Soft Teddy</h2>
+                <p>Velvety soft feel for hugs and bedroom decoration.</p>
+                <div class="price-row">
+                    <span class="price-tag">Rs. <span class="total-price">549</span></span>
+                    <span class="rating-chip">⭐ 4.8</span>
+                </div>
+                <div class="qty-box">
+                    <button class="qty-btn" onclick="updateQty('prod-6', -1)">-</button>
+                    <span class="qty-val">1</span>
+                    <button class="qty-btn" onclick="updateQty('prod-6', 1)">+</button>
+                </div>
+                <div class="action-btns">
+                    <button class="details-btn" onclick="toggleDetails('prod-6')">View Specs</button>
+                    <button class="buy-card-btn" onclick="openCheckoutModal('prod-6')">🛒 Buy Now (UPI / COD)</button>
+                </div>
+                <div class="details-content">Height: 35 cm<br>Material: 100% Non-Toxic Plush<br>Washable: Gentle Wash</div>
+            </div>
+
+        </div>
+
+        <!-- FLOATING CHAT BUTTON -->
+        <button class="floating-chat-btn" onclick="openChatModal()" title="Live Chatroom">💬</button>
+    </div>
+
+    <!-- ================= 3. LIVE CYBER CHATROOM MODAL ================= -->
+    <div id="chatModal" class="chat-overlay">
+        <div class="chat-box">
+            <div class="chat-header">
+                <div class="chat-title">💬 Metaverse Teddy Club</div>
+                <button class="chat-close-btn" onclick="closeChatModal()">✕</button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="msg-bubble msg-left">
+                    <div class="msg-sender">🤖 Cyber AI</div>
+                    Teddy lovers metaverse chatroom me swagat hai! Yahan aap dosto ke sath chat aur 3D teddy share kar sakte hain.
+                </div>
+            </div>
+
+            <div class="chat-input-bar">
+                <button class="chat-btn-share-3d" onclick="shareTeddyInChat()">🧸 Share 3D</button>
+                <input type="text" id="chatInputText" class="chat-input-text" placeholder="Type message..." enterkeyhint="send" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                <button class="chat-btn-send" onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 4. PROFILE / SETTINGS MODAL ================= -->
+    <div id="profileModal" class="profile-overlay">
+        <div class="profile-card">
+            <div class="profile-header">
+                <h3>⚙️ User Profile & Settings</h3>
+                <button class="close-profile-btn" onclick="closeProfileModal()">✕</button>
+            </div>
+
+            <div class="avatar-uploader-box">
+                <div class="avatar-preview-wrap">
+                    <img id="profileAvatarPreview" src="" alt="Avatar" style="display:none;">
+                    <div id="profileAvatarFallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:bold;color:#fff;">D</div>
+                </div>
+                <label class="avatar-upload-trigger">
+                    📷 Change Profile Photo
+                    <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="handleAvatarFileSelect(event)">
+                </label>
+            </div>
+
+            <div class="neon-input-group">
+                <label class="neon-label">Your Name</label>
+                <input type="text" id="profNameInput" class="neon-input auto-jump-input" enterkeyhint="next" required>
+            </div>
+
+            <div class="neon-input-group">
+                <label class="neon-label">WhatsApp Mobile Number</label>
+                <input type="tel" id="profPhoneInput" class="neon-input" disabled style="opacity:0.6;">
+            </div>
+
+            <div class="neon-input-group">
+                <label class="neon-label">Saved Delivery Address</label>
+                <input type="text" id="profAddressInput" class="neon-input auto-jump-input" enterkeyhint="next" required>
+            </div>
+
+            <div class="neon-input-group">
+                <label class="neon-label">About Me (Bio)</label>
+                <input type="text" id="profAboutInput" class="neon-input auto-jump-input" placeholder="Teddy Lover / 3D Collector" enterkeyhint="done">
+            </div>
+
+            <button class="cyber-btn" onclick="saveProfileChanges()">💾 SAVE CHANGES</button>
+            <button class="cyber-btn" style="background:rgba(255,0,127,0.2); border:1px solid #ff007f; margin-top:10px;" onclick="handleLogout()">🚪 LOGOUT</button>
+        </div>
+    </div>
+
+    <!-- ================= 5. LIVE CAMERA AR MODAL ================= -->
+    <div id="viewer3dModal" class="modal-3d">
+        <video id="cameraFeed" autoplay playsinline muted></video>
+        <div id="cameraFlash"></div>
+
+        <div class="ar-top-nav">
+            <button class="nav-back-btn" onclick="close3DViewer()">← Back</button>
+        </div>
+
+        <div class="ar-shutter-container">
+            <button class="ar-shutter-btn" onclick="takeARScreenshot()" title="Photo Khinchein">
+                <div class="ar-shutter-inner">📸</div>
+            </button>
+            <span class="ar-shutter-text">Photo Lein</span>
+        </div>
+
+        <div id="scannerOverlay" class="scanner-container">
+            <div class="scanner-reticle">
+                <div class="scanner-laser"></div>
+            </div>
+            <div class="scanner-label">🔍 Scanning Room Floor / Surface...</div>
+        </div>
+
+        <model-viewer id="mainViewer"
+            src=""
+            alt="Teddy 3D Model"
+            auto-rotate
+            camera-controls
+            touch-action="pan-y"
+            shadow-intensity="1.5"
+            exposure="1.1">
+        </model-viewer>
+
+        <div class="ar-bottom-card" id="arBottomCard">
+            <div class="ar-info-header">
+                <div class="ar-title" id="arProdTitle">Teddy Bear</div>
+                <div class="ar-rating" id="arProdRating">⭐ 4.9</div>
+            </div>
+            <div class="ar-price" id="arProdPrice">Rs. 499</div>
+            <div class="ar-btn-row">
+                <button class="ar-share-btn" onclick="openCardPopup()">📱 Share Card</button>
+                <button class="ar-buy-btn" onclick="openCheckoutFromAR()">🛒 Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 6. CHECKOUT & UPI MODAL ================= -->
+    <div id="checkoutModal" class="checkout-overlay">
+        <div class="checkout-box">
+            <div class="checkout-header">
+                <h3>🛍️ Complete Your Order</h3>
+                <button class="close-checkout-btn" onclick="closeCheckoutModal()">✕</button>
+            </div>
+
+            <div class="order-summary">
+                <div style="font-size:32px;">🧸</div>
+                <div class="order-summary-info">
+                    <h4 id="coTitle">Sitting Teddy Bear</h4>
+                    <p id="coPrice">Total: Rs. 499 (Free Delivery)</p>
+                </div>
+            </div>
+
+            <div class="neon-input-group">
+                <label class="neon-label">Customer Name</label>
+                <input type="text" id="coName" class="neon-input auto-jump-input" enterkeyhint="next">
+            </div>
+
+            <div class="neon-input-group">
+                <label class="neon-label">Delivery Address & Pincode</label>
+                <input type="text" id="coAddress" class="neon-input auto-jump-input" enterkeyhint="next">
+            </div>
+
+            <div class="neon-input-group">
+                <label class="neon-label">WhatsApp Mobile Number</label>
+                <input type="tel" id="coPhone" class="neon-input auto-jump-input" maxlength="10" enterkeyhint="done">
+            </div>
+
+            <div style="margin-top:16px;">
+                <label class="neon-label">💳 Direct UPI Payment:</label>
+                <div class="upi-grid">
+                    <button class="upi-app-btn upi-btn-phonepe" onclick="payViaUPI('phonepe')">🟣 PhonePe</button>
+                    <button class="upi-app-btn upi-btn-gpay" onclick="payViaUPI('gpay')">🔵 Google Pay</button>
+                    <button class="upi-app-btn upi-btn-paytm" onclick="payViaUPI('paytm')">🔷 Paytm</button>
+                    <button class="upi-app-btn upi-btn-bhim" onclick="payViaUPI('bhim')">🟠 BHIM UPI</button>
+                </div>
+                <button class="btn-cod" onclick="confirmOrderWhatsApp()">📦 Cash on Delivery / Order on WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast-msg"></div>
+    <div id="hiddenQr" style="display:none;"></div>
+
+    <!-- BRANDED QR CARD POPUP -->
+    <div id="cardModal" class="card-popup-overlay">
+        <div class="card-container">
+            <canvas id="cardCanvas"></canvas>
+            <div class="card-actions">
+                <button class="btn-card-share" onclick="shareCardImageDirectly()">📲 WhatsApp par Photo Bhejo</button>
+                <button class="btn-card-download" onclick="downloadCardImage()">📥 Gallery me Save Karein</button>
+                <button class="btn-card-close" onclick="closeCardPopup()">Band Karein (Close)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MY_WHATSAPP_NUMBER = "918178696656";
+        const MY_UPI_ID = "8178696656@ibl";
+
+        let activeCardId = "prod-1";
+        let activeModelTitle = "Sitting Teddy Bear";
+        let activePrice = "499";
+        let activeRating = "4.9";
+        let cameraStream = null;
+
+        let currentUser = null;
+        let tempAvatarBase64 = null;
+
+        // ================= SMART AUTO-ENTER KEYBOARD NAVIGATION =================
+        function setupSmartKeyboardNavigation() {
+            const forms = [
+                { formId: 'registerForm', submitBtnId: 'btnSubmitReg' },
+                { formId: 'loginForm', submitBtnId: 'btnSubmitLogin' },
+                { formId: 'profileModal' },
+                { formId: 'checkoutModal' }
+            ];
+
+            forms.forEach(({ formId, submitBtnId }) => {
+                const container = document.getElementById(formId);
+                if (!container) return;
+                const inputs = Array.from(container.querySelectorAll('.auto-jump-input'));
+
+                inputs.forEach((input, index) => {
+                    // Auto scroll into center when keyboard opens
+                    input.addEventListener('focus', () => {
+                        setTimeout(() => {
+                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 280);
+                    });
+
+                    // Jump to next on Enter press
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (index < inputs.length - 1) {
+                                const nextInput = inputs[index + 1];
+                                nextInput.focus();
+                                nextInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            } else {
+                                if (submitBtnId) {
+                                    document.getElementById(submitBtnId).click();
+                                } else {
+                                    input.blur();
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+        }
+
+        // ================= OFFLINE WEB AUDIO SYNTH SFX =================
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playCyberSound(type = 'click') {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.setValueAtTime(880, now + 0.08);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                }
+            } catch (e) {}
+        }
+
+        // ================= GLOBAL CLICK PARTICLE BURST =================
+        const fxCanvas = document.getElementById('fxCanvas');
+        const fxCtx = fxCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeFxCanvas() {
+            fxCanvas.width = window.innerWidth;
+            fxCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeFxCanvas);
+        resizeFxCanvas();
+
+        function spawnParticles(x, y) {
+            playCyberSound('click');
+            const colors = ['#00f0ff', '#ff007f', '#00ff88', '#ffffff'];
+            for (let i = 0; i < 16; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    radius: Math.random() * 3 + 1.5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1,
+                    decay: Math.random() * 0.04 + 0.02
+                });
+            }
+        }
+
+        function renderParticles() {
+            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= p.decay;
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+                fxCtx.save();
+                fxCtx.globalAlpha = p.alpha;
+                fxCtx.fillStyle = p.color;
+                fxCtx.beginPath();
+                fxCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                fxCtx.fill();
+                fxCtx.restore();
+            }
+            requestAnimationFrame(renderParticles);
+        }
+        renderParticles();
+
+        window.addEventListener('pointerdown', (e) => {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                spawnParticles(e.clientX, e.clientY);
+            }
+        });
+
+        // ================= DATABASE & USER AUTH =================
+        function getUsersDB() {
+            return JSON.parse(localStorage.getItem('cyber_teddy_users') || '[]');
+        }
+
+        function saveUsersDB(db) {
+            localStorage.setItem('cyber_teddy_users', JSON.stringify(db));
+        }
+
+        function checkExistingSession() {
+            const savedPhone = localStorage.getItem('cyber_teddy_active_phone');
+            if (savedPhone) {
+                const db = getUsersDB();
+                const user = db.find(u => u.phone === savedPhone);
+                if (user) {
+                    loginUserSuccess(user);
+                    return;
+                }
+            }
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('storeScreen').style.display = 'none';
+        }
+
+        function switchAuthTab(tab) {
+            playCyberSound('click');
+            const loginBtn = document.getElementById('tabLoginBtn');
+            const regBtn = document.getElementById('tabRegisterBtn');
+            const loginForm = document.getElementById('loginForm');
+            const regForm = document.getElementById('registerForm');
+
+            if (tab === 'login') {
+                loginBtn.classList.add('active');
+                regBtn.classList.remove('active');
+                loginForm.style.display = 'block';
+                regForm.style.display = 'none';
+                document.getElementById('loginPhone').focus();
+            } else {
+                regBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                loginForm.style.display = 'none';
+                regForm.style.display = 'block';
+                document.getElementById('regName').focus();
+            }
+        }
+
+        function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const address = document.getElementById('regAddress').value.trim();
+            const pin = document.getElementById('regPin').value.trim();
+
+            if (phone.length < 10) {
+                alert("10-digit mobile number dalein!");
+                return;
+            }
+
+            const db = getUsersDB();
+            if (db.some(u => u.phone === phone)) {
+                alert("Yeh number pehle se registered hai! Login karein.");
+                switchAuthTab('login');
+                document.getElementById('loginPhone').value = phone;
+                return;
+            }
+
+            const newUser = {
+                name: name,
+                phone: phone,
+                address: address,
+                pin: pin,
+                about: "3D Teddy Metaverse Explorer 🧸",
+                photo: null
+            };
+
+            db.push(newUser);
+            saveUsersDB(db);
+            showToast("Account Created Successfully!");
+            playCyberSound('success');
+            loginUserSuccess(newUser);
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value.trim();
+            const pin = document.getElementById('loginPin').value.trim();
+
+            const db = getUsersDB();
+            const user = db.find(u => u.phone === phone);
+
+            if (!user) {
+                alert("Yeh number register nahi hai! Pehle 'New Account' banayein.");
+                return;
+            }
+
+            if (user.pin !== pin) {
+                alert("Galat PIN! Sahi 4-digit PIN dalein.");
+                return;
+            }
+
+            showToast("Welcome Back, " + user.name + "!");
+            playCyberSound('success');
+            loginUserSuccess(user);
+        }
+
+        function loginUserSuccess(user) {
+            currentUser = user;
+            localStorage.setItem('cyber_teddy_active_phone', user.phone);
+
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('storeScreen').style.display = 'block';
+
+            updateHeaderProfileBadge();
+            initLiveChatSync();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('cyber_teddy_active_phone');
+            currentUser = null;
+            closeProfileModal();
+            document.getElementById('storeScreen').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'flex';
+            showToast("Logged Out Successfully");
+        }
+
+        function updateHeaderProfileBadge() {
+            if (!currentUser) return;
+            document.getElementById('topUserName').innerText = currentUser.name.split(' ')[0];
+
+            const avatarWrap = document.getElementById('topAvatarBadge');
+            if (currentUser.photo) {
+                avatarWrap.innerHTML = `<img src="${currentUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            } else {
+                avatarWrap.innerText = currentUser.name.charAt(0).toUpperCase();
+            }
+        }
+
+        // ================= PROFILE & SETTINGS EDIT =================
+        function openProfileModal() {
+            if (!currentUser) return;
+            playCyberSound('click');
+
+            document.getElementById('profNameInput').value = currentUser.name;
+            document.getElementById('profPhoneInput').value = currentUser.phone;
+            document.getElementById('profAddressInput').value = currentUser.address || '';
+            document.getElementById('profAboutInput').value = currentUser.about || '';
+
+            const previewImg = document.getElementById('profileAvatarPreview');
+            const fallbackTxt = document.getElementById('profileAvatarFallback');
+
+            if (currentUser.photo) {
+                previewImg.src = currentUser.photo;
+                previewImg.style.display = 'block';
+                fallbackTxt.style.display = 'none';
+            } else {
+                previewImg.style.display = 'none';
+                fallbackTxt.style.display = 'flex';
+                fallbackTxt.innerText = currentUser.name.charAt(0).toUpperCase();
+            }
+
+            tempAvatarBase64 = currentUser.photo;
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function handleAvatarFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                tempAvatarBase64 = event.target.result;
+                const previewImg = document.getElementById('profileAvatarPreview');
+                const fallbackTxt = document.getElementById('profileAvatarFallback');
+                previewImg.src = tempAvatarBase64;
+                previewImg.style.display = 'block';
+                fallbackTxt.style.display = 'none';
+                showToast("Photo Selected! Click 'Save Changes'");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveProfileChanges() {
+            if (!currentUser) return;
+            const newName = document.getElementById('profNameInput').value.trim();
+            const newAddress = document.getElementById('profAddressInput').value.trim();
+            const newAbout = document.getElementById('profAboutInput').value.trim();
+
+            if (!newName || !newAddress) {
+                alert("Naam aur Address zaroori hai!");
+                return;
+            }
+
+            currentUser.name = newName;
+            currentUser.address = newAddress;
+            currentUser.about = newAbout;
+            currentUser.photo = tempAvatarBase64;
+
+            const db = getUsersDB();
+            const idx = db.findIndex(u => u.phone === currentUser.phone);
+            if (idx !== -1) {
+                db[idx] = currentUser;
+                saveUsersDB(db);
+            }
+
+            playCyberSound('success');
+            updateHeaderProfileBadge();
+            closeProfileModal();
+            showToast("Profile Updated Successfully! ✅");
+        }
+
+        // ================= LIVE CYBER CHATROOM SYSTEM =================
+        let chatChannel = null;
+
+        function initLiveChatSync() {
+            try {
+                chatChannel = new BroadcastChannel('cyber_teddy_chat');
+                chatChannel.onmessage = (event) => {
+                    appendIncomingMessage(event.data);
+                };
+            } catch (e) {}
+            loadChatHistory();
+        }
+
+        function openChatModal() {
+            playCyberSound('click');
+            document.getElementById('chatModal').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('chatInputText').focus();
+            }, 200);
+        }
+
+        function closeChatModal() {
+            document.getElementById('chatModal').style.display = 'none';
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInputText');
+            const text = input.value.trim();
+            if (!text || !currentUser) return;
+
+            const msgObj = {
+                sender: currentUser.name,
+                senderPhone: currentUser.phone,
+                text: text,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                teddyData: null
+            };
+
+            addMessageToFeed(msgObj, true);
+            saveChatMessage(msgObj);
+
+            if (chatChannel) {
+                chatChannel.postMessage(msgObj);
+            }
+
+            input.value = '';
+            playCyberSound('click');
+        }
+
+        function shareTeddyInChat() {
+            if (!currentUser) return;
+            const msgObj = {
+                sender: currentUser.name,
+                senderPhone: currentUser.phone,
+                text: `🧸 Check out this 3D Teddy: ${activeModelTitle}!`,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                teddyData: {
+                    id: activeCardId,
+                    title: activeModelTitle,
+                    price: activePrice
+                }
+            };
+
+            addMessageToFeed(msgObj, true);
+            saveChatMessage(msgObj);
+
+            if (chatChannel) {
+                chatChannel.postMessage(msgObj);
+            }
+
+            playCyberSound('success');
+            showToast("3D Teddy Shared in Chat!");
+        }
+
+        function appendIncomingMessage(msg) {
+            const isMe = currentUser && msg.senderPhone === currentUser.phone;
+            addMessageToFeed(msg, isMe);
+            playCyberSound('success');
+        }
+
+        function addMessageToFeed(msg, isMe) {
+            const container = document.getElementById('chatMessages');
+            const bubble = document.createElement('div');
+            bubble.className = `msg-bubble ${isMe ? 'msg-right' : 'msg-left'}`;
+
+            let html = `<div class="msg-sender">${isMe ? 'You' : msg.sender} • ${msg.time}</div><div>${msg.text}</div>`;
+
+            if (msg.teddyData) {
+                html += `
+                <div class="msg-teddy-card" onclick="open3DViewer('${msg.teddyData.id}'); closeChatModal();">
+                    <span style="font-size:20px;">🧸</span>
+                    <div>
+                        <strong style="color:#00f0ff;font-size:12px;">${msg.teddyData.title}</strong><br>
+                        <span style="color:#00ff88;font-size:11px;">Rs. ${msg.teddyData.price} | Tap for 3D View</span>
+                    </div>
+                </div>`;
+            }
+
+            bubble.innerHTML = html;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function saveChatMessage(msg) {
+            const history = JSON.parse(localStorage.getItem('cyber_chat_history') || '[]');
+            history.push(msg);
+            if (history.length > 50) history.shift();
+            localStorage.setItem('cyber_chat_history', JSON.stringify(history));
+        }
+
+        function loadChatHistory() {
+            const history = JSON.parse(localStorage.getItem('cyber_chat_history') || '[]');
+            history.forEach(msg => {
+                const isMe = currentUser && msg.senderPhone === currentUser.phone;
+                addMessageToFeed(msg, isMe);
+            });
+        }
+
+        // ================= CHECKOUT & UPI MODAL =================
+        function openCheckoutModal(cardId) {
+            activeCardId = cardId;
+            const card = document.getElementById(cardId);
+            activeModelTitle = card.getAttribute('data-title');
+            activePrice = card.querySelector('.total-price').innerText;
+
+            document.getElementById('coTitle').innerText = activeModelTitle;
+            document.getElementById('coPrice').innerText = `Total: Rs. ${activePrice} (Free Delivery)`;
+
+            if (currentUser) {
+                document.getElementById('coName').value = currentUser.name;
+                document.getElementById('coAddress').value = currentUser.address;
+                document.getElementById('coPhone').value = currentUser.phone;
+            }
+
+            document.getElementById('checkoutModal').style.display = 'flex';
+            playCyberSound('click');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').style.display = 'none';
+        }
+
+        function openCheckoutFromAR() {
+            close3DViewer();
+            openCheckoutModal(activeCardId);
+        }
+
+        function payViaUPI(app) {
+            const name = document.getElementById('coName').value.trim() || (currentUser ? currentUser.name : "Customer");
+            const amount = activePrice;
+            const note = encodeURIComponent(`Order for ${activeModelTitle}`);
+
+            const upiUrl = `upi://pay?pa=${MY_UPI_ID}&pn=TeddyStore&am=${amount}&cu=INR&tn=${note}`;
+            window.location.href = upiUrl;
+            showToast("Payment App khul rahi hai...");
+        }
+
+        function confirmOrderWhatsApp() {
+            const name = document.getElementById('coName').value.trim() || (currentUser ? currentUser.name : "Customer");
+            const address = document.getElementById('coAddress').value.trim() || (currentUser ? currentUser.address : "India");
+            const phone = document.getElementById('coPhone').value.trim() || (currentUser ? currentUser.phone : "N/A");
+
+            const direct3dLink = window.location.origin + window.location.pathname + '?view3d=' + activeCardId;
+
+            const message = 
+`🧸 *NEW CYBER TEDDY ORDER*
+━━━━━━━━━━━━━━━━━━━━━
+📦 *Product:* ${activeModelTitle}
+💰 *Total Amount:* Rs. ${activePrice}
+🚚 *Delivery:* Cash on Delivery / UPI
+
+👤 *CUSTOMER DETAILS*
+─────────────────────
+👤 *Naam:* ${name}
+📱 *Phone:* ${phone}
+📍 *Address:* ${address}
+
+🌐 *3D AR Model View:*
+${direct3dLink}
+━━━━━━━━━━━━━━━━━━━━━
+✅ *Order Confirm karne ke liye send karein.*`;
+
+            const encodedMsg = encodeURIComponent(message);
+            window.location.href = `https://api.whatsapp.com/send?phone=${MY_WHATSAPP_NUMBER}&text=${encodedMsg}`;
+        }
+
+        // ================= REAR CAMERA AR CONTROLLER =================
+        async function startCamera() {
+            const video = document.getElementById('cameraFeed');
+            video.muted = true;
+            video.playsInline = true;
+
+            const constraints = {
+                audio: false,
+                video: {
+                    facingMode: { ideal: "environment" },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
+            };
+
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = cameraStream;
+                video.onloadedmetadata = () => { video.play(); };
+            } catch (err) {
+                try {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    video.srcObject = cameraStream;
+                    video.play();
+                } catch (e) {
+                    console.warn("Camera start error:", e);
+                }
+            }
+        }
+
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            const video = document.getElementById('cameraFeed');
+            if (video) {
+                video.pause();
+                video.srcObject = null;
+            }
+        }
+
+        function open3DViewer(cardId) {
+            activeCardId = cardId;
+            const card = document.getElementById(cardId);
+            activeModelTitle = card.getAttribute('data-title');
+            activePrice = card.querySelector('.total-price').innerText;
+            activeRating = card.getAttribute('data-rating') || "4.9";
+            const modelUrl = card.getAttribute('data-model');
+
+            document.getElementById('arProdTitle').innerText = activeModelTitle;
+            document.getElementById('arProdPrice').innerText = "Rs. " + activePrice;
+            document.getElementById('arProdRating').innerText = "⭐ " + activeRating;
+
+            const viewer = document.getElementById('mainViewer');
+            viewer.style.opacity = '0';
+            viewer.setAttribute('src', modelUrl);
+
+            const scanner = document.getElementById('scannerOverlay');
+            scanner.style.display = 'flex';
+            scanner.style.opacity = '1';
+
+            document.getElementById('viewer3dModal').style.display = 'block';
+            startCamera();
+
+            setTimeout(() => {
+                scanner.style.opacity = '0';
+                setTimeout(() => {
+                    scanner.style.display = 'none';
+                    viewer.style.opacity = '1';
+                }, 400);
+            }, 1400);
+        }
+
+        function close3DViewer() {
+            document.getElementById('viewer3dModal').style.display = 'none';
+            document.getElementById('mainViewer').setAttribute('src', '');
+            stopCamera();
+        }
+
+        // ================= AR PHOTO CAPTURE =================
+        async function takeARScreenshot() {
+            const flash = document.getElementById('cameraFlash');
+            flash.style.opacity = '0.85';
+            setTimeout(() => { flash.style.opacity = '0'; }, 150);
+
+            const video = document.getElementById('cameraFeed');
+            const viewer = document.getElementById('mainViewer');
+
+            const canvas = document.createElement('canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const ctx = canvas.getContext('2d');
+
+            if (video && video.videoWidth > 0) {
+                const vw = video.videoWidth, vh = video.videoHeight;
+                const cw = canvas.width, ch = canvas.height;
+                const vRatio = vw / vh, cRatio = cw / ch;
+                let sx, sy, sw, sh;
+                if (vRatio > cRatio) {
+                    sh = vh; sw = vh * cRatio; sx = (vw - sw) / 2; sy = 0;
+                } else {
+                    sw = vw; sh = vw / cRatio; sx = 0; sy = (vh - sh) / 2;
+                }
+                ctx.drawImage(video, sx, sy, sw, sh, 0, 0, cw, ch);
+            } else {
+                ctx.fillStyle = "#1e222b";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            try {
+                const modelBlob = await viewer.toBlob({ idealAspect: false });
+                const modelImg = new Image();
+                const blobUrl = URL.createObjectURL(modelBlob);
+                modelImg.src = blobUrl;
+                await new Promise((resolve) => { modelImg.onload = resolve; });
+                ctx.drawImage(modelImg, 0, 0, canvas.width, canvas.height);
+                URL.revokeObjectURL(blobUrl);
+            } catch (e) {}
+
+            ctx.fillStyle = 'rgba(7, 9, 14, 0.75)';
+            if (ctx.roundRect) {
+                ctx.beginPath();
+                ctx.roundRect(18, canvas.height - 90, 270, 62, 14);
+                ctx.fill();
+            } else {
+                ctx.fillRect(18, canvas.height - 90, 270, 62);
+            }
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 16px -apple-system, Arial';
+            ctx.fillText(activeModelTitle, 32, canvas.height - 65);
+            ctx.fillStyle = '#00ff88';
+            ctx.font = 'bold 14px -apple-system, Arial';
+            ctx.fillText('Rs. ' + activePrice + '  |  🧸 Live AR Shot', 32, canvas.height - 42);
+
+            canvas.toBlob((blob) => {
+                if (!blob) return;
+                const safeName = activeModelTitle.replace(/[^a-zA-Z0-9]/g, '_');
+                const filename = `${safeName}_AR_Photo.png`;
+                const file = new File([blob], filename, { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        files: [file],
+                        title: activeModelTitle,
+                        text: `🧸 Check out ${activeModelTitle} in real world!`
+                    }).catch(() => {});
+                } else {
+                    const downloadUrl = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(downloadUrl), 2500);
+                    showToast('📸 Photo Gallery me save ho gayi!');
+                }
+            }, 'image/png');
+        }
+
+        // ================= QR CARD FUNCTIONS =================
+        function getDirectUrl() {
+            return window.location.origin + window.location.pathname + '?view3d=' + activeCardId;
+        }
+
+        async function openCardPopup() {
+            const directUrl = getDirectUrl();
+            const qrContainer = document.getElementById("hiddenQr");
+            qrContainer.innerHTML = "";
+
+            new QRCode(qrContainer, {
+                text: directUrl,
+                width: 220,
+                height: 220,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            let modelImg = null;
+            try {
+                const viewer = document.getElementById('mainViewer');
+                if (viewer && viewer.getAttribute('src')) {
+                    const blob = await viewer.toBlob({ idealAspect: true });
+                    const blobUrl = URL.createObjectURL(blob);
+                    modelImg = new Image();
+                    modelImg.src = blobUrl;
+                    await new Promise(r => { modelImg.onload = r; });
+                }
+            } catch (e) {}
+
+            setTimeout(() => {
+                const qrCanvas = qrContainer.querySelector('canvas');
+                const canvas = document.getElementById('cardCanvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = 420;
+                canvas.height = 600;
+
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, 420, 600);
+
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, 420, 80);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 20px -apple-system, Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('🧸 TEDDY BEAR AR STUDIO', 210, 36);
+
+                ctx.font = '12px -apple-system, Arial';
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillText('⚡ 3D Interactive Augmented Reality', 210, 58);
+
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(95, 95, 230, 230);
+
+                if (qrCanvas) {
+                    ctx.drawImage(qrCanvas, 100, 100, 220, 220);
+                }
+
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(20, 340, 380, 160);
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.strokeRect(20, 340, 380, 160);
+
+                if (modelImg) {
+                    ctx.drawImage(modelImg, 35, 355, 120, 130);
+                }
+
+                const textX = modelImg ? 175 : 40;
+                ctx.textAlign = 'left';
+
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 18px -apple-system, Arial';
+                ctx.fillText(activeModelTitle, textX, 385);
+
+                ctx.fillStyle = '#eab308';
+                ctx.font = 'bold 15px -apple-system, Arial';
+                ctx.fillText('⭐ ' + activeRating + ' Rating', textX, 415);
+
+                ctx.fillStyle = '#16a34a';
+                ctx.font = 'bold 20px -apple-system, Arial';
+                ctx.fillText('Rs. ' + activePrice, textX, 450);
+
+                ctx.fillStyle = '#64748b';
+                ctx.font = '11px -apple-system, Arial';
+                ctx.fillText('Free Fast Home Delivery', textX, 475);
+
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#334155';
+                ctx.font = 'bold 14px -apple-system, Arial';
+                ctx.fillText('📷 Phone Camera / Google Lens se Scan karein', 210, 540);
+
+                ctx.fillStyle = '#64748b';
+                ctx.font = '12px -apple-system, Arial';
+                ctx.fillText('Scan karte hi teddy aapke camera me khulega!', 210, 565);
+
+                document.getElementById('cardModal').style.display = 'flex';
+            }, 100);
+        }
+
+        function closeCardPopup() {
+            document.getElementById('cardModal').style.display = 'none';
+        }
+
+        function shareCardImageDirectly() {
+            const canvas = document.getElementById('cardCanvas');
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], `${activeModelTitle}_3D_Card.png`, { type: 'image/png' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: activeModelTitle,
+                            text: `🧸 *${activeModelTitle}* ka 3D AR Model!\nIs card ko scan karke teddy ko apne ghar me dekhein.`
+                        });
+                    } catch (e) {}
+                } else {
+                    downloadCardImage();
+                }
+            }, 'image/png');
+        }
+
+        function downloadCardImage() {
+            const canvas = document.getElementById('cardCanvas');
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `${activeModelTitle}_3D_AR_Card.png`;
+                link.href = url;
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+                showToast("Card Gallery me save ho gaya!");
+            }, 'image/png');
+        }
+
+        // ================= STORE QUANTITY & SPECS =================
+        function updateQty(cardId, change) {
+            playCyberSound('click');
+            const card = document.getElementById(cardId);
+            const qtySpan = card.querySelector('.qty-val');
+            const totalSpan = card.querySelector('.total-price');
+            const basePrice = parseInt(card.getAttribute('data-price'));
+
+            let currentQty = parseInt(qtySpan.innerText);
+            let newQty = currentQty + change;
+
+            if (newQty < 1) newQty = 1;
+
+            qtySpan.innerText = newQty;
+            totalSpan.innerText = newQty * basePrice;
+        }
+
+        function toggleDetails(cardId) {
+            playCyberSound('click');
+            const card = document.getElementById(cardId);
+            const details = card.querySelector('.details-content');
+            const btn = card.querySelector('.details-btn');
+
+            if (details.style.display === "block") {
+                details.style.display = "none";
+                btn.innerText = "View Specs";
+            } else {
+                details.style.display = "block";
+                btn.innerText = "Hide Specs";
+            }
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            toast.innerText = text;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2600);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setupSmartKeyboardNavigation();
+            checkExistingSession();
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetProd = urlParams.get('view3d');
+            if (targetProd && document.getElementById(targetProd)) {
+                open3DViewer(targetProd);
+            }
+        });
+    </script>
+</body>
+</html>
